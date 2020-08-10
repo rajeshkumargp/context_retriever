@@ -1,0 +1,28 @@
+{
+  "class11": [
+    {
+      "bookname": "Vyavsay Adhyanan",
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class11/classXlVyavsayAdhyanan/classXlVyavsayAdhyanan.zip",
+      "chapters": null,
+      "language": "हिन्दी"
+    },
+    {
+      "bookname": "Airthvavstha Ka Vikash",
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class11/ClassXlBhartiyAirthKaVikas/ClassXlBhartiyAirthKaVikas.zip",
+      "chapters": null,
+      "language": "हिन्दी"
+    },
+    {
+      "bookname": "Bharat ka Samvidhan",
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class11/classXlBharat-ka-Samvidhan/khps2dd.zip",
+      "chapters": null,
+      "language": "हिन्दी"
+    },
+    {
+      "bookname": "Bhautik Paryabaran",
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class11/ClassXlbharatBhautikPrayawarn/ClassXlbharatBhautikPrayawarn.zip",
+      "chapters": null,
+      "language": "हिन्दी"
+    }
+  ]
+}
