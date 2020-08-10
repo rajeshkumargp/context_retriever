@@ -17,7 +17,7 @@ Install the Python dependencies:
 pip3 install -r requirements.txt
 ```
 
-You may also need `pip install -r test-requirements.txt`. Depending on the parts of bugbug you want to run, you might need to install dependencies from other requirement files (find them with `find . -name "*requirements*"`).
+You may also need `pip install -r test-requirements.txt`.
 
 Currently, Python 3.7+ is required.
 
