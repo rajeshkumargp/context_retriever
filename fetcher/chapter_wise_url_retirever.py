@@ -7,11 +7,16 @@ from pprint import pprint
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 BOOK_URL = "http://bstbpc.gov.in/ClassXIIth.aspx"
 
+capabilities = DesiredCapabilities().FIREFOX
+capabilities["pageLoadStrategy"] = "eager"
+
 driver = webdriver.Firefox(
-    executable_path="/home/rajeshkumar/TOOLz/STANDALONE/geckodriver-v0.27.0-linux64/geckodriver"
+    capabilities=capabilities,
+    executable_path="/home/rajeshkumar/TOOLz/STANDALONE/geckodriver-v0.27.0-linux64/geckodriver",
 )
 driver.get(BOOK_URL)
 assert "WELCOME" in driver.title
@@ -109,7 +114,9 @@ for a_book_index, a_book_meta in enumerate(records_list, 1):
     records_list[a_book_index - 1]["chapter_info"] = chapter_info
 
     with open(
-        f"class12_books_chapters_info_{a_book_index}.json", "w", encoding="utf-8"
+        f"data/fetcher_meta_data/semi_auto/class12_books_chapters_info_{a_book_index}.json",
+        "w",
+        encoding="utf-8",
     ) as fp:
         json.dump(records_list, fp, ensure_ascii=False, indent=2)
 
@@ -117,7 +124,7 @@ for a_book_index, a_book_meta in enumerate(records_list, 1):
 print("232323232")
 
 with open(
-    "../data/fetcher_meta_data/semi_auto/class12_books_chapters_info.json",
+    "data/fetcher_meta_data/semi_auto/class12_books_chapters_info.json",
     "w",
     encoding="utf-8",
 ) as fp:

@@ -1358,207 +1358,24 @@
     "Slno": "26",
     "Language": "हिन्दी",
     "Book": "Math Hindi",
-    "href": "classXllthmath_Hnd.aspx",
-    "chapter_info": [
-      {
-        "chapter_index": 1,
-        "name": "Chapter-1",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart1/lhmh101.pdf"
-      },
-      {
-        "chapter_index": 2,
-        "name": "Chapter-2",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart1/lhmh102.pdf"
-      },
-      {
-        "chapter_index": 3,
-        "name": "Chapter-3",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart1/lhmh103.pdf"
-      },
-      {
-        "chapter_index": 4,
-        "name": "Chapter-4",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart1/lhmh104.pdf"
-      },
-      {
-        "chapter_index": 5,
-        "name": "Chapter-5",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart1/lhmh105.pdf"
-      },
-      {
-        "chapter_index": 6,
-        "name": "Chapter-6",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart1/lhmh106.pdf"
-      },
-      {
-        "chapter_index": 7,
-        "name": "Complete Book Download",
-        "src": "http://bstbpc.gov.in//Bookpdf/class11/class11Math/khmh1dd.zip"
-      }
-    ]
+    "href": "classXllthmath_Hnd.aspx"
   },
   {
     "Slno": "27",
     "Language": "हिन्दी",
     "Book": "Math Hindi Part2",
-    "href": "classXllthmath_HndP2.aspx",
-    "chapter_info": [
-      {
-        "chapter_index": 1,
-        "name": "Chapter-1",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh201.pdf"
-      },
-      {
-        "chapter_index": 2,
-        "name": "Chapter-2",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh202.pdf"
-      },
-      {
-        "chapter_index": 3,
-        "name": "Chapter-3",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh203.pdf"
-      },
-      {
-        "chapter_index": 4,
-        "name": "Chapter-4",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh204.pdf"
-      },
-      {
-        "chapter_index": 5,
-        "name": "Chapter-5",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh205.pdf"
-      },
-      {
-        "chapter_index": 6,
-        "name": "Chapter-6",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh206.pdf"
-      },
-      {
-        "chapter_index": 7,
-        "name": "Chapter-7",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh207.pdf"
-      },
-      {
-        "chapter_index": 8,
-        "name": "Chapter-8",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh208.pdf"
-      },
-      {
-        "chapter_index": 9,
-        "name": "Chapter-9",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh209.pdf"
-      },
-      {
-        "chapter_index": 10,
-        "name": "Chapter-10",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh210.pdf"
-      },
-      {
-        "chapter_index": 11,
-        "name": "Chapter-11",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh211.pdf"
-      },
-      {
-        "chapter_index": 12,
-        "name": "Chapter-12",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh212.pdf"
-      },
-      {
-        "chapter_index": 13,
-        "name": "Chapter-13",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/Mathpart2/lhmh213.pdf"
-      },
-      {
-        "chapter_index": 14,
-        "name": "Complete Book Download",
-        "src": "http://bstbpc.gov.in//Bookpdf/class11/class11Math/khmh1dd.zip"
-      }
-    ]
+    "href": "classXllthmath_HndP2.aspx"
   },
   {
     "Slno": "28",
     "Language": "हिन्दी",
     "Book": "Vyashthi Arthshasrta",
-    "href": "classXllVyashthiArthshasrta.aspx",
-    "chapter_info": [
-      {
-        "chapter_index": 1,
-        "name": "Chapter-1",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec101.pdf"
-      },
-      {
-        "chapter_index": 2,
-        "name": "Chapter-2",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec102.pdf"
-      },
-      {
-        "chapter_index": 3,
-        "name": "Chapter-3",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec103.pdf"
-      },
-      {
-        "chapter_index": 4,
-        "name": "Chapter-4",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec104.pdf"
-      },
-      {
-        "chapter_index": 5,
-        "name": "Chapter-5",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec105.pdf"
-      },
-      {
-        "chapter_index": 6,
-        "name": "Chapter-6",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec106.pdf"
-      },
-      {
-        "chapter_index": 7,
-        "name": "Complete Book Download",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/classXll_VyashthiArthshasrta.zip"
-      }
-    ]
+    "href": "classXllVyashthiArthshasrta.aspx"
   },
   {
     "Slno": "29",
     "Language": "हिन्दी",
     "Book": "Vyashthi Arthshasrta",
-    "href": "classXllVyashthiArthshasrta.aspx",
-    "chapter_info": [
-      {
-        "chapter_index": 1,
-        "name": "Chapter-1",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec101.pdf"
-      },
-      {
-        "chapter_index": 2,
-        "name": "Chapter-2",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec102.pdf"
-      },
-      {
-        "chapter_index": 3,
-        "name": "Chapter-3",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec103.pdf"
-      },
-      {
-        "chapter_index": 4,
-        "name": "Chapter-4",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec104.pdf"
-      },
-      {
-        "chapter_index": 5,
-        "name": "Chapter-5",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec105.pdf"
-      },
-      {
-        "chapter_index": 6,
-        "name": "Chapter-6",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/lhec106.pdf"
-      },
-      {
-        "chapter_index": 7,
-        "name": "Complete Book Download",
-        "src": "http://bstbpc.gov.in//Bookpdf/class12/classXll_VyashthiArthshasrta/classXll_VyashthiArthshasrta.zip"
-      }
-    ]
+    "href": "classXllVyashthiArthshasrta.aspx"
   }
 ]

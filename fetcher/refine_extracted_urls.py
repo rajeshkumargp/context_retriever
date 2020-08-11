@@ -7,6 +7,8 @@ from url_normalize import url_normalize
 src = "data/fetcher_meta_data/semi_auto/class12_books_chapters_info_3.json"
 dest = "data/fetcher_meta_data/refinement/class12_books_chapters_info_3_refined.json"
 
+src = "data/fetcher_meta_data/semi_auto/class12_books_chapters_info_29.json"
+dest = "data/fetcher_meta_data/refinement/class12_books_chapters_info_29_refined.json"
 
 src_dict = None
 with open(src, "r", encoding="utf-8") as fp:
