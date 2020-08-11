@@ -36,7 +36,7 @@ def download_file(url, dest_path, timeout=30):
 
     except Exception as e:
         current_file_path = None
-        print(str(e))
+        print(f"url={url} -  {str(e)}")
         # e has to be logged in logger
         # raise e
 
@@ -80,21 +80,29 @@ def get_book_and_chapters(book_meta, book_dir):
     else:
         curent_book_status = None
 
-    current_chapters_url = book_meta.get("chapters", [])
-    if current_chapters_url is not None:
+    current_chapters_url_info = book_meta.get("chapters", [])
+    if current_chapters_url_info is not None:
         _current_chapters_status = list()
         current_chapters_status = list()
-        for a_chapter_url in sorted(current_chapters_url):
+        for a_chapter_url_info in sorted(
+            current_chapters_url_info, key=lambda i: i.get("name", "")
+        ):
             downloaded_file_path = download_file(
-                url=a_chapter_url, dest_path=book_dir, timeout=30
+                url=a_chapter_url_info["src"], dest_path=book_dir, timeout=30
             )
             _current_chapters_status.append(downloaded_file_path)
 
-        for a_chapter_url, a_chapter_status in zip(
-            sorted(current_chapters_url), _current_chapters_status
+        for a_chapter_url_info, a_chapter_status in zip(
+            sorted(current_chapters_url_info, key=lambda i: i.get("name", "")),
+            _current_chapters_status,
         ):
             current_chapters_status.append(
-                {"chapter_url": a_chapter_url, "status": a_chapter_status is not None}
+                {
+                    "chapter_url": a_chapter_url_info["src"],
+                    "status": a_chapter_status is not None,
+                    "chapter_index": a_chapter_url_info["chapter_index"],
+                    "name": a_chapter_url_info["name"],
+                }
             )
 
     else:
@@ -156,7 +164,7 @@ def fetch_books_to_local(dest_dir, meta_file_path):
     with open(
         os.path.join(dest_dir, status_tracker_file_name), "w", encoding="utf-8"
     ) as status_file_handler:
-        json.dump(fetcher_info, status_file_handler)
+        json.dump(fetcher_info, status_file_handler, ensure_ascii=False, indent=2)
 
     return fetcher_info
 
@@ -169,16 +177,24 @@ if __name__ == "__main__":
         "--meta_filepath",
         "-f",
         type=str,
-        help="Path of json file having meta information default: ",
+        help="Path of json file having meta information default: data/fetcher_meta_data/class11books_sample.json",
         default="data/fetcher_meta_data/class11books_sample.json",
+    )
+
+    parser.add_argument(
+        "--dest_dir",
+        "-dd",
+        type=str,
+        help="Path of directory where resulting resources will be stored ",
+        default="/tmp/trailAB",
     )
 
     args = parser.parse_args()
     meta_file_path = args.meta_filepath
+    dest_dir = args.dest_dir
 
     print(f"Passed meta-file={meta_file_path}")
+    print(f"Passed dest-dir={dest_dir}")
 
-    status = fetch_books_to_local(
-        dest_dir="/tmp/trail01", meta_file_path=meta_file_path
-    )
+    status = fetch_books_to_local(dest_dir=dest_dir, meta_file_path=meta_file_path)
     pprint(status)

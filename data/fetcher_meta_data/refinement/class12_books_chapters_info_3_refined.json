@@ -1,0 +1,279 @@
+{
+  "class12": [
+    {
+      "language": "हिन्दी",
+      "bookname": "Vyavasai Adhyan-I",
+      "href": "classXll-VyavasaiAdhyan-I.aspx",
+      "chapters": [
+        {
+          "chapter_index": 1,
+          "name": "Chapter-1",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs101.pdf"
+        },
+        {
+          "chapter_index": 2,
+          "name": "Chapter-2",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs102.pdf"
+        },
+        {
+          "chapter_index": 3,
+          "name": "Chapter-3",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs103.pdf"
+        },
+        {
+          "chapter_index": 4,
+          "name": "Chapter-4",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs104.pdf"
+        },
+        {
+          "chapter_index": 5,
+          "name": "Chapter-5",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs105.pdf"
+        },
+        {
+          "chapter_index": 6,
+          "name": "Chapter-6",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs106.pdf"
+        },
+        {
+          "chapter_index": 7,
+          "name": "Chapter-7",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs107.pdf"
+        },
+        {
+          "chapter_index": 8,
+          "name": "Chapter-8",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/lhbs108.pdf"
+        }
+      ],
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class12/classXllVyavasaiAdhyanI/classXllVyavasaiAdhyanI.zip"
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Vyavasai Adhyan II",
+      "href": "classXll_VyavasaiAdhyanII.aspx",
+      "chapters": [
+        {
+          "chapter_index": 1,
+          "name": "Chapter-1",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll-VyavasaiAdhyanII/lhbs209.pdf"
+        },
+        {
+          "chapter_index": 2,
+          "name": "Chapter-2",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll-VyavasaiAdhyanII/lhbs210.pdf"
+        },
+        {
+          "chapter_index": 3,
+          "name": "Chapter-3",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll-VyavasaiAdhyanII/lhbs211.pdf"
+        },
+        {
+          "chapter_index": 4,
+          "name": "Chapter-4",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll-VyavasaiAdhyanII/lhbs212.pdf"
+        },
+        {
+          "chapter_index": 5,
+          "name": "Chapter-5",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll-VyavasaiAdhyanII/lhbs213.pdf"
+        }
+      ],
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class12/classXll-VyavasaiAdhyanII/classXll-VyavasaiAdhyanII.zip"
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Bhogol main peryojnatmak",
+      "href": "classXll_Bhogolmainperyojnatmak.aspx",
+      "chapters": [
+        {
+          "chapter_index": 1,
+          "name": "Chapter-1",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/lhgy301.pdf"
+        },
+        {
+          "chapter_index": 2,
+          "name": "Chapter-2",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/lhgy302.pdf"
+        },
+        {
+          "chapter_index": 3,
+          "name": "Chapter-3",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/lhgy303.pdf"
+        },
+        {
+          "chapter_index": 4,
+          "name": "Chapter-4",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/lhgy304.pdf"
+        },
+        {
+          "chapter_index": 5,
+          "name": "Chapter-5",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/lhgy305.pdf"
+        },
+        {
+          "chapter_index": 6,
+          "name": "Chapter-6",
+          "src": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/lhgy306.pdf"
+        }
+      ],
+      "complete_book": "http://bstbpc.gov.in/Bookpdf/class12/classXll_Bhogolmainperyojnatmak/classXll_Bhogolmainperyojnatmak.zip"
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Bharatiya Itihas 1",
+      "href": "classXllBharatiyaItihas1.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Bharatiya Itihas 2",
+      "href": "classXllBharatiyaItihas2.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Bharatiya Itihas 3",
+      "href": "classXllBharatiyaItihas3.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Bharatlog",
+      "href": "classXllBharatlog.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Bharat main Samajik",
+      "href": "classXllBharatmainSamajik.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Biology",
+      "href": "classXllBio.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Chemistry Hndi part1",
+      "href": "classXllchemistryHnd_part1.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Chemistry Hndi part2",
+      "href": "classXllchemistryHnd_part2.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Lekhashastra1",
+      "href": "classXlLekhashastra1.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "LekhashastraII",
+      "href": "classXlLekhashastraII.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "LekhaAlavkari-1",
+      "href": "classXllLekhaAlavkari-1.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Lekhasastra Company-2",
+      "href": "classXllLekhasastraCompany-2.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "ManavBhugol",
+      "href": "classXllManavBhugol.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Manovigyan",
+      "href": "classXllmanovigyan.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Physics 1",
+      "href": "classXllphysics_l.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Physics II",
+      "href": "classXllphysics_ll.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Physics Hindi I",
+      "href": "classXllPhysicsHnd_part1.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Physics Hindi II",
+      "href": "classXllPhysicsHnd_part2.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Samashty Arthshastra",
+      "href": "classXllSamashtyArthshastra.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Samkalin Vishwa",
+      "href": "classXllSamkalinVishwa.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Swatantra Bharat",
+      "href": "classXllSwatantraBharat.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Biology Hindi",
+      "href": "classXllthBIoHnd.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Math Hindi",
+      "href": "classXllthmath_Hnd.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Math Hindi Part2",
+      "href": "classXllthmath_HndP2.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Vyashthi Arthshasrta",
+      "href": "classXllVyashthiArthshasrta.aspx",
+      "chapters": null
+    },
+    {
+      "language": "हिन्दी",
+      "bookname": "Vyashthi Arthshasrta",
+      "href": "classXllVyashthiArthshasrta.aspx",
+      "chapters": null
+    }
+  ]
+}
