@@ -8,15 +8,20 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.firefox.options import Options
 
 BOOK_URL = "http://bstbpc.gov.in/ClassXIIth.aspx"
 
 capabilities = DesiredCapabilities().FIREFOX
 capabilities["pageLoadStrategy"] = "eager"
 
+options = Options()
+options.add_argument("-headless")
+
 driver = webdriver.Firefox(
     capabilities=capabilities,
     executable_path="/home/rajeshkumar/TOOLz/STANDALONE/geckodriver-v0.27.0-linux64/geckodriver",
+    options=options,
 )
 driver.get(BOOK_URL)
 assert "WELCOME" in driver.title
