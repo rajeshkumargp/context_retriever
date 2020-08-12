@@ -3,12 +3,26 @@
 
 import argparse
 import json
+import logging
 import os
 import shutil
 import urllib.request
 from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+c_handler = logging.StreamHandler()
+c_handler.setLevel(logging.DEBUG)
+
+c_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+c_handler.setFormatter(c_format)
+
+logger.addHandler(c_handler)
+
+logger.info("Script is getting loaded")
 
 
 def load_meta_json(source_meta_file):
@@ -36,9 +50,8 @@ def download_file(url, dest_path, timeout=30):
 
     except Exception as e:
         current_file_path = None
-        print(f"url={url} -  {str(e)}")
-        # e has to be logged in logger
-        # raise e
+        logger.error(f"Download issue for the url={url}")
+        logger.exception(e)
 
     return current_file_path
 
@@ -114,12 +127,14 @@ def get_book_and_chapters(book_meta, book_dir):
 def fetch_books_to_local(dest_dir, meta_file_path):
 
     if not os.path.exists(meta_file_path):
+        logger.error(f"META FILE NOT FOUND={meta_file_path}")
         raise Exception(f"META FILE NOT FOUND={meta_file_path}")
 
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
     meta_info = load_meta_json(source_meta_file=meta_file_path)
+    logger.info(f"Loaded Meta Json from {meta_file_path}")
 
     fetcher_info = dict()
 
@@ -141,8 +156,8 @@ def fetch_books_to_local(dest_dir, meta_file_path):
                 current_class_dir, current_class_book_name
             )
 
-            if not os.path.exists(current_class_book_dir):
-                os.makedirs(current_class_book_dir)
+            # if not os.path.exists(current_class_book_dir):
+            #    os.makedirs(current_class_book_dir)
 
             current_book_status, current_chapters_status = get_book_and_chapters(
                 book_meta=a_book, book_dir=current_class_book_dir
@@ -157,6 +172,12 @@ def fetch_books_to_local(dest_dir, meta_file_path):
             fetcher_info[a_class].append(temp_d)
             del temp_d
 
+            logger.info(
+                f"Processed for the class={a_class} book_index={a_book_index} book_name={current_class_book_name}"
+            )
+
+        logger.info(f"Processed for the class={a_class}")
+
     current_year_mon_day_hr_min_sec = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     status_tracker_file_name = f"run_{current_year_mon_day_hr_min_sec}.json".format(
         current_year_mon_day_hr_min_sec
@@ -170,6 +191,7 @@ def fetch_books_to_local(dest_dir, meta_file_path):
 
 
 if __name__ == "__main__":
+    logger.info("Program started")
     from pprint import pprint
 
     parser = argparse.ArgumentParser(description="Get books from JSON.")
@@ -198,3 +220,5 @@ if __name__ == "__main__":
 
     status = fetch_books_to_local(dest_dir=dest_dir, meta_file_path=meta_file_path)
     pprint(status)
+
+    logger.info("Program ended")
