@@ -50,8 +50,8 @@ def download_file(url, dest_path, timeout=30):
 
     except Exception as e:
         current_file_path = None
-        logger.error(f"Download issue for the url={url}")
-        logger.exception(e)
+        logger.warning(f"Download issue for the url={url}")
+        logger.exception(str(e))
 
     return current_file_path
 
@@ -186,6 +186,10 @@ def fetch_books_to_local(dest_dir, meta_file_path):
         os.path.join(dest_dir, status_tracker_file_name), "w", encoding="utf-8"
     ) as status_file_handler:
         json.dump(fetcher_info, status_file_handler, ensure_ascii=False, indent=2)
+
+    logger.info(
+        f"Report generated, refer the file={os.path.join(dest_dir, status_tracker_file_name)}"
+    )
 
     return fetcher_info
 

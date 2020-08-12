@@ -22,3 +22,6 @@ REFINE_SRC = "data/fetcher_meta_data/semi_auto/class12_books_chapters_info_3.jso
 REFINE_DEST = (
     "data/fetcher_meta_data/refinement/class12_books_chapters_info_3_refined.json"
 )
+
+# Settings for get_books.py
+TIMEOUT = 30
