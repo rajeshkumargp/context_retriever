@@ -16,3 +16,9 @@ FIREFOX_EXECUTABLE_PATH_OTHER = (
     "/home/rajeshkumar/TOOLz/STANDALONE/geckodriver-v0.27.0-linux64/geckodriver"
 )
 RESULT_JSON = "data/fetcher_meta_data/semi_auto/class12_books_chapters_info.json"
+
+# Settings for refine_extracted_urls.py
+REFINE_SRC = "data/fetcher_meta_data/semi_auto/class12_books_chapters_info_29.json"
+REFINE_DEST = (
+    "data/fetcher_meta_data/refinement/class12_books_chapters_info_29_refined.json"
+)
