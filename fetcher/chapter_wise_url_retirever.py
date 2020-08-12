@@ -2,15 +2,35 @@
 # -*- coding: utf-8 -*-
 
 import json
-from pprint import pprint
+import logging
+from urllib.parse import urlparse
 
+import fetcher_config
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.options import Options
 
-BOOK_URL = "http://bstbpc.gov.in/ClassXIIth.aspx"
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+c_handler = logging.StreamHandler()
+c_handler.setLevel(logging.DEBUG)
+
+c_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+c_handler.setFormatter(c_format)
+
+logger.addHandler(c_handler)
+
+logger.info("Program started")
+
+# Loading settings
+
+BOOK_URL = fetcher_config.CLASS_A_BOOKS_URL
+executable_path = fetcher_config.FIREFOX_EXECUTABLE_PATH_OTHER
+result_json = fetcher_config.RESULT_JSON
+
 
 capabilities = DesiredCapabilities().FIREFOX
 capabilities["pageLoadStrategy"] = "eager"
@@ -19,13 +39,12 @@ options = Options()
 options.add_argument("-headless")
 
 driver = webdriver.Firefox(
-    capabilities=capabilities,
-    executable_path="/home/rajeshkumar/TOOLz/STANDALONE/geckodriver-v0.27.0-linux64/geckodriver",
-    options=options,
+    capabilities=capabilities, executable_path=executable_path, options=options,
 )
 driver.get(BOOK_URL)
-assert "WELCOME" in driver.title
+# assert "WELCOME" in driver.title
 
+logger.info("Loaded Selenium Driver")
 
 ALL_SUBJECTS_XPATH = (
     "/html/body/form/div[3]/div[5]/table/tbody/tr/td/div[1]/div/table/tbody/tr[2]/td/div/div/div/"
@@ -50,7 +69,6 @@ records_list = list()
 for a_subject in all_subject_references:
     records = a_subject.find_all("td")
     if records is not None and len(records) != 0:
-        # print(len(records) == len(headers))
         a_subject_meta = dict()
         for curr_header, curr_tag in zip(headers, records):
             a_subject_meta[curr_header] = curr_tag.text.strip()
@@ -61,16 +79,14 @@ for a_subject in all_subject_references:
 
         records_list.append(a_subject_meta)
 
-print("232323232")
-pprint(records_list)
-print("232323232")
+logger.info("Retrieved Subjects and webpage info for each subject")
 
 # #####################################################################
 
-_TEMP_CURR_BOOK_URL = "http://bstbpc.gov.in/"
+_temp = urlparse(BOOK_URL)
+_TEMP_CURR_BOOK_URL = f"{_temp.scheme}://{_temp.netloc}"
 
-print("232323232")
-
+logger.info("Retrieval of Subjects- name and url done")
 
 for a_book_index, a_book_meta in enumerate(records_list, 1):
     CURR_BOOK_URL = f"{_TEMP_CURR_BOOK_URL}/{a_book_meta['href']}"
@@ -113,26 +129,25 @@ for a_book_index, a_book_meta in enumerate(records_list, 1):
             }
         )
 
-        print(f"a_book_index={a_book_index} chapter_index={chapter_index}")
+        logger.info(
+            f"a_book_index={a_book_index} bookname={a_book_meta['Book']} chapter_index={chapter_index}"
+        )
 
-    print(f"a_book_index={a_book_index} done")
+    logger.info(f"a_book_index={a_book_index} bookname={a_book_meta['Book']} done")
+
     records_list[a_book_index - 1]["chapter_info"] = chapter_info
 
-    with open(
-        f"data/fetcher_meta_data/semi_auto/class12_books_chapters_info_{a_book_index}.json",
-        "w",
-        encoding="utf-8",
-    ) as fp:
+    temp_json = f"{result_json.rsplit('.json', 1)[0]}_{a_book_index}.json"
+
+    with open(temp_json, "w", encoding="utf-8",) as fp:
         json.dump(records_list, fp, ensure_ascii=False, indent=2)
 
+    logger.info(f"Writing info to the file {temp_json}")
 
-print("232323232")
 
-with open(
-    "data/fetcher_meta_data/semi_auto/class12_books_chapters_info.json",
-    "w",
-    encoding="utf-8",
-) as fp:
+logger.info(f"Writing info to the file {result_json}")
+
+with open(result_json, "w", encoding="utf-8",) as fp:
     json.dump(records_list, fp, ensure_ascii=False, indent=2)
 
 print("Done")

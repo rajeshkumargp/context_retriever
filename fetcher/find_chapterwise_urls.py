@@ -1,15 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
+from pprint import pprint
+
+import fetcher_config
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-BOOK_URL = "http://bstbpc.gov.in/Default.aspx"
+BOOK_URL = fetcher_config.BOOK_URL
+executable_path = fetcher_config.FIREFOX_EXECUTABLE_PATH
+
+capabilities = DesiredCapabilities().FIREFOX
+capabilities["pageLoadStrategy"] = "eager"
+
+options = Options()
+options.add_argument("-headless")
+
 
 driver = webdriver.Firefox(
-    executable_path="/home/rajeshkumar/TOOLz/STANDALONE/geckodriver-v0.27.0-linux64/geckodriver"
+    capabilities=capabilities, executable_path=executable_path, options=options,
 )
 driver.get(BOOK_URL)
 assert "WELCOME" in driver.title
@@ -35,4 +49,12 @@ class_wise_home_pages = list()
 
 for a_class, a_class_elem in enumerate(all_classes_elem, 1):
     a_class_url = a_class_elem.get_attribute("href")
-    class_wise_home_pages.append(a_class_url)
+    a_class_name = a_class_elem.get_attribute("innerText")
+    class_wise_home_pages.append({"class_name": a_class_name, "class_url": a_class_url})
+
+pprint(class_wise_home_pages)
+
+with open("data/fetcher_meta_data/class_wise_urls.josn", "w", encoding="utf-8") as fp:
+    json.dump(class_wise_home_pages, fp, ensure_ascii=False, indent=2)
+
+print("Done")
