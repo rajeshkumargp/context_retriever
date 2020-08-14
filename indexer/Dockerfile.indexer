@@ -1,0 +1,10 @@
+FROM debian:10.5-slim
+RUN apt-get update
+RUN apt-get install poppler-utils -y
+RUN apt install tesseract-ocr -y
+RUN apt install libtesseract-dev -y
+RUN apt install wget -y
+RUN apt install python3 -y
+RUN apt install python3-pip -y
+#RUN apt-get install -y awscli -y
+
