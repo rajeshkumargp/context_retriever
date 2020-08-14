@@ -7,9 +7,10 @@
 import glob
 import logging
 import os
+import sys
 
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ProfileNotFound
 
 # ################
 
@@ -30,7 +31,13 @@ logger.addHandler(c_handler)
 logger.info("Script is getting loaded")
 
 
-def push_to_s3(source_dir, dest_s3_bucket, dest_bucket_dir_path="", overwrite=False):
+def push_to_s3(
+    source_dir,
+    dest_s3_bucket,
+    dest_bucket_dir_path="",
+    overwrite=False,
+    profile_name="default",
+):
     if not os.path.exists(source_dir):
         raise Exception("Directory Not Exists")
 
@@ -55,7 +62,14 @@ def push_to_s3(source_dir, dest_s3_bucket, dest_bucket_dir_path="", overwrite=Fa
     all_files_upload_status = [False] * len(all_files_key_path_norm_inc_prefix)
 
     # ##########################################################
-    boto3.setup_default_session(profile_name="ttb_con_ret")
+    try:
+        boto3.setup_default_session(profile_name=profile_name)
+    except ProfileNotFound as e:
+        logger.error("Setup the Profile `aws configure in terminal`")
+        print("\n\nSetup the Profile `aws configure in terminal`\n\n")
+        logger.exception(e)
+        sys.exit(0)
+
     s3_client = boto3.client("s3")
     # ##########################################################
 
@@ -141,6 +155,9 @@ if __name__ == "__main__":
     )
     bucket_name = "ttb-context-retriever-study-materials"
     push_to_s3(
-        source_dir=local_dir, dest_s3_bucket=bucket_name, dest_bucket_dir_path="books"
+        source_dir=local_dir,
+        dest_s3_bucket=bucket_name,
+        dest_bucket_dir_path="books",
+        profile_name="ttb_con_ret",
     )
     print("Done Uploading Script")
