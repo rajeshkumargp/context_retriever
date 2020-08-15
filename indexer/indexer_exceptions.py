@@ -12,3 +12,11 @@ class PDF_Not_Found_Exception(Indexer_Exception):
 
 class Batch_Length_Mismatch_Exception(Indexer_Exception):
     pass
+
+
+class Image_Not_Found_Exception(Indexer_Exception):
+    pass
+
+
+class OCR_Result_Directory_Absent_Error(Indexer_Exception):
+    pass
