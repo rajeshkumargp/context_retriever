@@ -8,10 +8,9 @@ import subprocess
 from itertools import repeat
 
 import indexer_config
-from indexer_exceptions import (
+from indexer_exceptions import (  # OCR_Result_Directory_Absent_Error,
     Batch_Length_Mismatch_Exception,
     Image_Not_Found_Exception,
-    OCR_Result_Directory_Absent_Error,
 )
 
 logger = logging.getLogger(__name__)
@@ -28,6 +27,18 @@ logger.info(f"Script {__file__} is getting loaded")
 
 tessdata_dir = indexer_config.TESSDATA_DIR
 
+# ####################
+
+lock = mp.Lock()
+
+
+def init(local_lock):
+    global lock
+    lock = local_lock
+
+
+# #######################
+
 
 def ocr_single_image(
     image_file_path, ocr_result_text_file_path, tessdata_dir=tessdata_dir
@@ -38,13 +49,16 @@ def ocr_single_image(
 
     parent_dir = os.path.dirname(ocr_result_text_file_path)
 
+    lock.acquire()
     if not os.path.exists(parent_dir):
+        os.makedirs(parent_dir)
         logger.warning(
             f"Directory not exists for the OCR result file={ocr_result_text_file_path}"
         )
-        raise OCR_Result_Directory_Absent_Error(
-            f"Directory not exists for the OCR result file={ocr_result_text_file_path}"
-        )
+        # raise OCR_Result_Directory_Absent_Error(
+        #     f"Directory not exists for the OCR result file={ocr_result_text_file_path}"
+        # )
+    lock.release()
 
     a_page_tess_process = subprocess.Popen(
         [
@@ -105,10 +119,10 @@ def batch_process_ocr_image(
             + f"and text_files_size={len(list_of_text_files_path)}"
         )
 
-    directory_list = set([os.path.dirname(afile) for afile in list_of_text_files_path])
-    for a_directory in directory_list:
-        if not os.path.exists(a_directory):
-            os.makedirs(a_directory)
+    # directory_list = set([os.path.dirname(afile) for afile in list_of_text_files_path])
+    # for a_directory in directory_list:
+    #     if not os.path.exists(a_directory):
+    #         os.makedirs(a_directory)
 
     if chunk_size is None:
         chunk_size = 1
@@ -120,7 +134,10 @@ def batch_process_ocr_image(
 
         process_size = max(process_size, mp.cpu_count() - 2, 1)
 
-    with mp.Pool(processes=process_size) as pool:
+    curr_lock = mp.Lock()
+    with mp.Pool(
+        processes=process_size, initializer=init, initargs=(curr_lock,)
+    ) as pool:
         batch_results = pool.starmap(
             func=ocr_single_image,
             iterable=zip(
@@ -138,21 +155,21 @@ if __name__ == "__main__":
     import glob
     from pprint import pprint
 
-    src_image_path = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png"
-    )
-    ocr_text_path = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png.text"
-    )
-    result = ocr_single_image(
-        image_file_path=src_image_path,
-        ocr_result_text_file_path=ocr_text_path,
-        tessdata_dir=tessdata_dir,
-    )
-
-    pprint(result)
+    # src_image_path = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png"
+    # )
+    # ocr_text_path = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png.text"
+    # )
+    # result = ocr_single_image(
+    #     image_file_path=src_image_path,
+    #     ocr_result_text_file_path=ocr_text_path,
+    #     tessdata_dir=tessdata_dir,
+    # )
+    #
+    # pprint(result)
 
     images_path = glob.glob(
         os.path.join(
