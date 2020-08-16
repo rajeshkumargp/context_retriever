@@ -11,6 +11,8 @@ from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
 
+import fetcher_config
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -182,6 +184,16 @@ def fetch_books_to_local(dest_dir, meta_file_path):
     status_tracker_file_name = f"run_{current_year_mon_day_hr_min_sec}.json".format(
         current_year_mon_day_hr_min_sec
     )
+    with open(
+        os.path.join(dest_dir, status_tracker_file_name), "w", encoding="utf-8"
+    ) as status_file_handler:
+        json.dump(fetcher_info, status_file_handler, ensure_ascii=False, indent=2)
+
+    logger.info(
+        f"Report generated, refer the file={os.path.join(dest_dir, status_tracker_file_name)}"
+    )
+
+    status_tracker_file_name = fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
     with open(
         os.path.join(dest_dir, status_tracker_file_name), "w", encoding="utf-8"
     ) as status_file_handler:

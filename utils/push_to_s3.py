@@ -12,6 +12,8 @@ import sys
 import boto3
 from botocore.exceptions import ClientError, ProfileNotFound
 
+from fetcher import fetcher_config
+
 # ################
 
 
@@ -40,6 +42,15 @@ def push_to_s3(
 ):
     if not os.path.exists(source_dir):
         raise Exception("Directory Not Exists")
+
+    meta_books_class_subject_chapters_download_log = os.path.join(
+        source_dir, fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
+    )
+    meta_boks_class_subject_chapters_download_key = os.path.join(
+        "meta",
+        dest_bucket_dir_path,
+        fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME,
+    )
 
     all_files_raw_path = glob.glob(
         os.path.join(source_dir, "**", "*.pdf"), recursive=True
@@ -144,6 +155,28 @@ def push_to_s3(
                         f"Skipping {afile_index}/{len(all_files_key_path_norm_inc_prefix)}"
                         + f"file={afile_raw_path} key={afile_key_path_norm_inc_prefix}"
                     )
+
+            # Uploading run log file in meta_logs
+            try:
+                _ = s3_client.upload_file(
+                    Filename=meta_books_class_subject_chapters_download_log,
+                    Bucket=dest_s3_bucket,
+                    Key=meta_boks_class_subject_chapters_download_key,
+                )
+                all_files_upload_status[afile_index - 1] = True
+                logger.info(
+                    "Uploaded Downloaded Log File"
+                    + f"file={meta_books_class_subject_chapters_download_log}"
+                    + f"key={meta_boks_class_subject_chapters_download_key}"
+                )
+
+            except (ClientError, Exception) as e:
+                logger.error(
+                    "Failure on Uploading Downloaded Log File "
+                    + f"file={meta_books_class_subject_chapters_download_log}"
+                    + f"key={meta_boks_class_subject_chapters_download_key}"
+                )
+                logger.exception(e)
 
     else:
         logger.error("S3 Connection establishing error")

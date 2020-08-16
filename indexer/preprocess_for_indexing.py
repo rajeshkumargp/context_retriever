@@ -148,13 +148,14 @@ def preprocess_for_indexing(src_study_materials_books, exclusion_list_file=None)
 
     # Writing intermediate status trackers
     image_conversion_log = os.path.join(
-        os.path.dirname(src_study_materials_books), "run_log_pdftoppm.json"
+        os.path.dirname(src_study_materials_books), indexer_config.RUN_LOG_PDFTOPPM
     )
     with open(image_conversion_log, "w", encoding="utf-8") as out:
         json.dump(image_results_split_up["status"], out, ensure_ascii=False, indent=2)
 
     image_conversion_log_stage = os.path.join(
-        os.path.dirname(src_study_materials_books), "run_log_pdftoppm_staging.json"
+        os.path.dirname(src_study_materials_books),
+        indexer_config.RUN_LOG_PDFTOPPM_STAGING,
     )
     with open(image_conversion_log_stage, "w", encoding="utf-8") as out:
         json.dump(image_results_split_up, out, ensure_ascii=False, indent=2)
@@ -197,13 +198,14 @@ def preprocess_for_indexing(src_study_materials_books, exclusion_list_file=None)
     # Writing intermediate status trackers
 
     ocr_conversion_log = os.path.join(
-        os.path.dirname(src_study_materials_books), "run_log_tesseract.json"
+        os.path.dirname(src_study_materials_books), indexer_config.RUN_LOG_TESSOCR
     )
     with open(ocr_conversion_log, "w", encoding="utf-8") as out:
         json.dump(ocr_results_split_up["status"], out, ensure_ascii=False, indent=2)
 
     ocr_conversion_log_stage = os.path.join(
-        os.path.dirname(src_study_materials_books), "run_log_tesseract_staging.json"
+        os.path.dirname(src_study_materials_books),
+        indexer_config.RUN_LOG_TESSOCR_STAGING,
     )
     with open(ocr_conversion_log_stage, "w", encoding="utf-8") as out:
         json.dump(ocr_results_split_up, out, ensure_ascii=False, indent=2)

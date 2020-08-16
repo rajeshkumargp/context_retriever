@@ -11,10 +11,7 @@ from datetime import datetime
 import boto3
 from botocore.exceptions import ClientError, ProfileNotFound
 
-# ################
-
-
-# ################
+from fetcher import fetcher_config
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -37,7 +34,6 @@ def pull_from_s3(
     overwrite=True,
     profile_name="default",
 ):
-
     # Check for profile existence
     try:
         boto3.setup_default_session(profile_name=profile_name)
@@ -130,20 +126,56 @@ def pull_from_s3(
                     logger.error(f"Error while downloading the object={afile_key}")
                     logger.exception(e)
 
+            # Downloading Meta data log file
+
+            category = src_s3_dir_path.split(src_s3_dir_path, 1)[0]
+            meta_download_class_subjects_key = os.path.join(
+                category, fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
+            )
+
+            dest_file = os.path.join(dest_local_dir, meta_download_class_subjects_key)
+            parent_dir = os.path.dirname(dest_file)
+            if not os.path.exists(parent_dir):
+                os.makedirs(parent_dir)
+
+            try:
+                s3_client.download_file(
+                    Bucket=src_s3_bucket,
+                    Key=meta_download_class_subjects_key,
+                    Filename=dest_file,
+                )
+                logger.info(
+                    f"Downloaded META_FILE={meta_download_class_subjects_key} local_file={dest_file}"
+                )
+            except ClientError as e:
+                logger.error(
+                    f"Error while downloading the object={meta_download_class_subjects_key}"
+                )
+                logger.exception(e)
+
+            # Framing Status Logs
+
             stat_log_file_content = "\n".join(stat_log_file_content)
 
             current_year_mon_day_hr_min_sec = datetime.now().strftime(
                 "%Y_%m_%d_%H_%M_%S"
             )
-            status_tracker_file_name = f"current_s3_objects_info_{current_year_mon_day_hr_min_sec}.txt".format(
-                current_year_mon_day_hr_min_sec
+            status_tracker_file_name = (
+                f"{fetcher_config.CURRENT_S3_KEY_TO_LOCAL_FILE_MAP.rsplit('.txt')[0]}"
+                + f"_{current_year_mon_day_hr_min_sec}.txt"
             )
             status_tracker_file = os.path.join(dest_local_dir, status_tracker_file_name)
 
             with open(status_tracker_file, "w", encoding="utf-8") as stat_file:
                 stat_file.write(stat_log_file_content)
 
-    logger.info("Script ended")
+            status_tracker_file_name = fetcher_config.CURRENT_S3_KEY_TO_LOCAL_FILE_MAP
+            status_tracker_file = os.path.join(dest_local_dir, status_tracker_file_name)
+
+            with open(status_tracker_file, "w", encoding="utf-8") as stat_file:
+                stat_file.write(stat_log_file_content)
+
+    logger.info(f"Script={__name__} ended")
 
 
 if __name__ == "__main__":
@@ -156,5 +188,4 @@ if __name__ == "__main__":
         overwrite=False,
         profile_name="ttb_con_ret",
     )
-
     print("Done Retrieval Script")

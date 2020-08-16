@@ -25,3 +25,9 @@ REFINE_DEST = (
 
 # Settings for get_books.py
 TIMEOUT = 30
+DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME = (
+    "downloaded_classwise_subjects_chapters_status.json"
+)
+
+# Setting Get from s3
+CURRENT_S3_KEY_TO_LOCAL_FILE_MAP = "current_s3_objects_info.txt"
