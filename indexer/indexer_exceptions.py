@@ -20,3 +20,11 @@ class Image_Not_Found_Exception(Indexer_Exception):
 
 class OCR_Result_Directory_Absent_Error(Indexer_Exception):
     pass
+
+
+class Books_Directory_Absent(Indexer_Exception):
+    pass
+
+
+class Exclusion_List_File_Absent(Indexer_Exception):
+    pass

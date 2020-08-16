@@ -6,6 +6,7 @@
 import logging
 import os
 import sys
+from datetime import datetime
 
 import boto3
 from botocore.exceptions import ClientError, ProfileNotFound
@@ -101,6 +102,8 @@ def pull_from_s3(
             if not os.path.exists(dest_local_dir):
                 os.makedirs(dest_local_dir)
 
+            stat_log_file_content = list()
+
             # Retrieving each file
             for afile_index, afile_key in enumerate(all_key_files, 1):
                 dest_file = os.path.join(dest_local_dir, afile_key)
@@ -116,14 +119,30 @@ def pull_from_s3(
                         logger.info(
                             f"Downloaded {afile_index}/{len(all_key_files)} key={afile_key} local_file={dest_file}"
                         )
+                        stat_log_file_content.append(f"{afile_key}\t{dest_file}")
                     else:
                         logger.info(
                             f"Skipped {afile_index}/{len(all_key_files)} key={afile_key} local_file={dest_file}"
                         )
+                        stat_log_file_content.append(f"{afile_key}\t{dest_file}")
 
                 except ClientError as e:
                     logger.error(f"Error while downloading the object={afile_key}")
                     logger.exception(e)
+
+            stat_log_file_content = "\n".join(stat_log_file_content)
+
+            current_year_mon_day_hr_min_sec = datetime.now().strftime(
+                "%Y_%m_%d_%H_%M_%S"
+            )
+            status_tracker_file_name = f"current_s3_objects_info_{current_year_mon_day_hr_min_sec}.txt".format(
+                current_year_mon_day_hr_min_sec
+            )
+            status_tracker_file = os.path.join(dest_local_dir, status_tracker_file_name)
+
+            with open(status_tracker_file, "w", encoding="utf-8") as stat_file:
+                stat_file.write(stat_log_file_content)
+
     logger.info("Script ended")
 
 
@@ -138,4 +157,4 @@ if __name__ == "__main__":
         profile_name="ttb_con_ret",
     )
 
-    print("Done Uploading Script")
+    print("Done Retrieval Script")

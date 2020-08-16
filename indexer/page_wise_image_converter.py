@@ -82,9 +82,9 @@ def convert_pdf_to_page_wise_images(
         "return_message": message,
         "in_pdf_file": pdf_file_path,
         "in_page_wise_image_dir": meta_dir_page_image_dir,
-        "temp_pid": os.getppid(),
-        "temp_ppid": os.getpid(),
-        "temp_sub_pid": img_converter_process.pid,
+        # "temp_pid": os.getppid(),
+        # "temp_ppid": os.getpid(),
+        # "temp_sub_pid": img_converter_process.pid,
     }
 
 

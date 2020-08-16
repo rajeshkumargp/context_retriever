@@ -144,7 +144,7 @@ if __name__ == "__main__":
     )
     ocr_text_path = (
         "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png.text"
+        "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png.txt"
     )
     result = ocr_single_image(
         image_file_path=src_image_path,

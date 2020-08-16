@@ -1,5 +1,6 @@
 beautifulsoup4==4.9.1
 boto3==1.14.41
+elasticsearch==7.8.1
 pre-commit==2.6.0
 requests==2.24.0
 selenium==3.141.0
