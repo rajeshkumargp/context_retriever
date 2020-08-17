@@ -28,3 +28,7 @@ class Books_Directory_Absent(Indexer_Exception):
 
 class Exclusion_List_File_Absent(Indexer_Exception):
     pass
+
+
+class ES_Connection_Failure(Indexer_Exception):
+    pass

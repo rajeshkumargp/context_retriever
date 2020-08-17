@@ -6,8 +6,13 @@ import logging
 import os
 from datetime import datetime
 
-import indexer_config
-from elasticsearch import Elasticsearch
+from indexer_utils import (
+    find_pdf_src_from_txt_src,
+    frame_chapter_wise_info,
+    get_es_client,
+    load_s3_key_local_file_to_s3_mapper,
+    paragraph_sectioner,
+)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -22,105 +27,6 @@ logger.addHandler(c_handler)
 logger.info(f"Script {__file__} is getting loaded")
 
 
-def find_pdf_src_from_txt_src(txt_src):
-    page_wise_text_dir = os.path.dirname(txt_src)
-    pdf_meta_base_dir = os.path.dirname(page_wise_text_dir)
-    pdf_src_file = f"{pdf_meta_base_dir}.pdf"
-    return pdf_src_file
-
-
-def frame_s3_given_key(
-    object_key,
-    bucket_name="ttb-context-retriever-study-materials",
-    region_name="ap-south-1",
-):
-    return f"https://{bucket_name}.s3.{region_name}/{object_key}"
-
-
-def load_s3_key_local_file_to_s3_mapper(current_s3_to_local_map_file):
-    contents = None
-    with open(current_s3_to_local_map_file, "r", encoding="utf-8") as fp:
-        contents = fp.read()
-    contents = contents.split("\n")
-    contents = [a_line.split("\t") for a_line in contents]
-
-    local_file_s3_key_s3_url_mapper = dict()
-    # Key= Local pdf, value=(S3_key, s3_url)
-    local_file_s3_key_s3_url_mapper = {
-        a_line[1]: (a_line[0], frame_s3_given_key(a_line[0])) for a_line in contents
-    }
-    return local_file_s3_key_s3_url_mapper
-
-
-def paragraph_sectioner(contents):
-    contents_lines = contents.split("\n")
-    paragraphs = list()
-    line_index = 0
-    curr_para = list()
-    while line_index < len(contents_lines):
-        curr_line = contents_lines[line_index].strip()
-        if len(curr_line) == 0:
-            if len(curr_para) > 0:
-                paragraphs.append(" ".join(curr_para))
-                curr_para = list()
-            else:
-                # skipping multiple empty lines
-                pass
-        else:
-            curr_para.append(curr_line)
-
-        line_index += 1
-
-    if len(curr_para) > 0:
-        paragraphs.append(" ".join(curr_para))
-
-    if len(paragraphs) == 0:
-        paragraphs = [""]
-
-    return paragraphs
-
-
-def get_es_client():
-    es_hosts = indexer_config.ELASTIC_SEARCH_HOSTS
-    es_client = Elasticsearch(hosts=es_hosts)
-    return es_client
-
-
-def frame_chapter_wise_info(pdf_chapters_info_file):
-    class_chapter_book_info = None
-    with open(pdf_chapters_info_file, "r", encoding="utf-8") as fp:
-        class_chapter_book_info = json.load(fp)
-
-    class_chapter_book_info_alter = dict()
-
-    for a_class in class_chapter_book_info.keys():
-        class_chapter_book_info_alter[a_class] = dict()
-        a_class_all_subjects = class_chapter_book_info[a_class]
-
-        for a_subject in a_class_all_subjects:
-
-            for a_chapter in a_subject["chapters"]:
-                basename = os.path.basename(a_chapter["chapter_url"])
-                class_chapter_book_info_alter[a_class][basename] = dict()
-                class_chapter_book_info_alter[a_class][basename][
-                    "op_language"
-                ] = a_subject["language"]
-                class_chapter_book_info_alter[a_class][basename][
-                    "op_subject"
-                ] = a_subject["bookname"]
-
-                class_chapter_book_info_alter[a_class][basename][
-                    "op_chapter_name"
-                ] = a_chapter["name"]
-                class_chapter_book_info_alter[a_class][basename][
-                    "op_chapter_index"
-                ] = a_chapter["chapter_index"]
-                class_chapter_book_info_alter[a_class][basename][
-                    "op_chapter_path_url_publisher"
-                ] = a_chapter["chapter_url"]
-    return class_chapter_book_info_alter
-
-
 def index_a_page_in_es(
     ocr_text_src_file,
     pdf_src_file,
@@ -128,10 +34,15 @@ def index_a_page_in_es(
     books_subjects_chapters_info,
     es_client=None,
 ):
-
+    es_client_close_at_the_end = False
     # Create es_client object
     if es_client is None:
         es_client = get_es_client()
+        es_client_close_at_the_end = True
+
+    indexing_status_failures = list()
+    para_counters_success = 0
+    para_counters_failures = 0
 
     # pdf basename
     pdf_basename = os.path.basename(pdf_src_file)
@@ -152,7 +63,7 @@ def index_a_page_in_es(
 
     # Framing a page Record
     a_page_record = dict()
-    a_page_record["relative_page_numbe_in_chapter"] = relative_page_number
+    a_page_record["relative_page_number_in_chapter"] = relative_page_number
     a_page_record["page_content"] = page_contents
 
     a_page_record["class"] = class_info
@@ -161,6 +72,7 @@ def index_a_page_in_es(
     current_pdf_meta_info = books_subjects_chapters_info.get(class_info, {}).get(
         pdf_basename, {}
     )
+
     a_page_record["op_subject"] = current_pdf_meta_info.get("op_subject", "")
     a_page_record["op_language"] = current_pdf_meta_info.get("op_language", "")
 
@@ -176,13 +88,23 @@ def index_a_page_in_es(
     a_page_record["chapter_path_key"] = s3_key
     a_page_record["ins_timestamp"] = datetime.now()
 
-    # inserting into ES
-    # PAGE INFO
+    # ingestion in elastic search
+    index_status = es_client.index(
+        index="page_content", body=a_page_record, doc_type="page_content"
+    )
+    if index_status["result"] != "created":
+        temp = dict()
+        temp = a_page_record
+        temp["ocr_text_src_file"] = ocr_text_src_file
+        indexing_status_failures.append(temp)
+        del temp
+
+        logger.error(f"ES Index Failure on text_source={ocr_text_src_file}")
 
     # Framing template for a_para record
     a_para_record = dict()
-    a_para_record["relative_page_numbe_in_chapter"] = relative_page_number
-    a_para_record["page_content"] = page_contents
+    a_para_record["relative_page_number_in_chapter"] = relative_page_number
+    # a_para_record["page_content"] = page_contents
 
     a_para_record["class"] = class_info
     a_para_record["subject"] = bookname
@@ -215,8 +137,91 @@ def index_a_page_in_es(
         a_para_record["relative_para_number_in_page"] = a_para_index
         a_para_record["para_content"] = a_para
 
-        # inserting into ES
-        # PARA_INFO
+        # ingestion in elastic search
+        index_status = es_client.index(
+            index="para_content", body=a_para_record, doc_type="para_content"
+        )
+        if index_status["result"] != "created":
+            temp = dict()
+            temp = a_para_record
+            temp["ocr_text_src_file"] = ocr_text_src_file
+            indexing_status_failures.append(temp)
+            del temp
+            para_counters_failures += 1
+        else:
+            para_counters_success += 1
+
+    logger.info(
+        f"Text_file={ocr_text_src_file} success_para={para_counters_success} failure_para={para_counters_failures}"
+    )
+
+    if es_client_close_at_the_end is True:
+        es_client.close()
+        logger.info("Closed ElasticSearch Client ")
+
+    return indexing_status_failures
+
+
+def batch_index_list_of_pages(
+    list_of_ocr_text_src_files,
+    s3_key_local_file_url_map_file,
+    books_subjects_chapters_info_file,
+    es_client=None,
+):
+    # Check for Length Match
+
+    assert os.path.exists(s3_key_local_file_url_map_file)
+    assert os.path.exists(books_subjects_chapters_info_file)
+
+    s3_key_local_file_to_s3_url_map = load_s3_key_local_file_to_s3_mapper(
+        current_s3_to_local_map_file=s3_key_local_file_url_map_file
+    )
+
+    books_subjects_chapters_info = frame_chapter_wise_info(
+        books_subjects_chapters_info_file
+    )
+
+    list_of_pdf_src_files = [
+        find_pdf_src_from_txt_src(a_ocr_text_file)
+        for a_ocr_text_file in list_of_ocr_text_src_files
+    ]
+
+    # Indexing into Elastic Search
+    es_client_close_at_the_end = False
+    # Create es_client object
+    if es_client is None:
+        es_client = get_es_client()
+        es_client_close_at_the_end = True
+
+    indexing_status_failures = list()
+
+    total_files_count = len(list_of_ocr_text_src_files)
+
+    for file_index, (a_ocr_text_file, a_pdf_src_file) in enumerate(
+        zip(list_of_ocr_text_src_files, list_of_pdf_src_files), 1
+    ):
+        indexing_status = index_a_page_in_es(
+            ocr_text_src_file=a_ocr_text_file,
+            pdf_src_file=a_pdf_src_file,
+            s3_key_local_file_url_map=s3_key_local_file_to_s3_url_map,
+            books_subjects_chapters_info=books_subjects_chapters_info,
+            es_client=es_client,
+        )
+        if len(indexing_status) > 0:
+            indexing_status_failures.append(indexing_status)
+            logger.warning(
+                f"Indexed pages {file_index}/{total_files_count} page={a_ocr_text_file} with some errors"
+            )
+
+        logger.info(
+            f"Indexed pages {file_index}/{total_files_count} page={a_ocr_text_file} Done"
+        )
+
+    if es_client_close_at_the_end is True:
+        es_client.close()
+        logger.info("Closed ElasticSearch Client ")
+
+    return indexing_status_failures
 
 
 if __name__ == "__main__":
@@ -226,7 +231,7 @@ if __name__ == "__main__":
     )
     current_s3_to_local_map_file = (
         "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/"
-        "books_dummy_v3/current_s3_objects_info_2020_08_15_22_00_14.txt"
+        "books_dummy_v3/current_s3_objects_info_2020_08_15_22_00_14_dummy.txt"
     )
 
     pdf_chapters_info = (
@@ -247,6 +252,13 @@ if __name__ == "__main__":
         image_src_files.append(a_log["image_src"])
         ocr_text_files.append(a_log["ocr_text"])
 
-    s3_key_local_file_to_s3_url_map = load_s3_key_local_file_to_s3_mapper(
-        current_s3_to_local_map_file=current_s3_to_local_map_file
+    indexing_failures = batch_index_list_of_pages(
+        list_of_ocr_text_src_files=ocr_text_files,
+        s3_key_local_file_url_map_file=current_s3_to_local_map_file,
+        books_subjects_chapters_info_file=pdf_chapters_info,
+        es_client=None,
     )
+    from pprint import pprint
+
+    pprint(indexing_failures)
+    print("Script Ended")

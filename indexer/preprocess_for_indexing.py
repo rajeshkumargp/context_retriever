@@ -7,10 +7,7 @@ import logging
 import os
 
 import indexer_config
-from indexer_exceptions import (
-    Books_Directory_Absent,
-    Exclusion_List_File_Absent,
-)
+from indexer_exceptions import Books_Directory_Absent
 from page_wise_image_converter import batch_process_pdf_to_page_wise_image
 from page_wise_ocr import batch_process_ocr_image
 
@@ -88,27 +85,23 @@ def split_by_return_codes(list_of_results, select_fields, success_return_codes=[
     return split_up
 
 
-def preprocess_for_indexing(src_study_materials_books, exclusion_list_file=None):
+def preprocess_for_indexing(src_study_materials_books, exclusion_list=None):
 
     if not os.path.exists(src_study_materials_books):
         logger.error(f"{src_study_materials_books} - path does not exists")
         raise Books_Directory_Absent(
             f"{src_study_materials_books} - path does not exists"
         )
+    if exclusion_list is None:
+        exclusion_list = list()
 
     exclusion_list = list()
-    if exclusion_list_file is not None:
-        if not os.path.exists(exclusion_list_file):
-            logger.error(f"Exclusion list file={exclusion_list_file} is absent")
-            raise Exclusion_List_File_Absent(
-                f"Exclusion list file={exclusion_list_file} is absent"
-            )
 
-        with open(exclusion_list_file, "r", encoding="utf-8") as excl_file:
-            exclusion_list = excl_file.read().split("\n")
-
-        logger.info(f"Parsed exclusion file={exclusion_list_file}")
+    if len(exclusion_list) > 0:
+        logger.info(f"Exclusion list having length={len(exclusion_list)} s3 keys")
         exclusion_list = sorted(exclusion_list)
+    else:
+        logger.info(f"Exclusion list having EMPTY={len(exclusion_list)} s3 keys")
 
     all_study_materials_books_pdf = get_all_pdf_paths(src_study_materials_books)
     logger.info(
@@ -214,10 +207,16 @@ def preprocess_for_indexing(src_study_materials_books, exclusion_list_file=None)
 
 
 if __name__ == "__main__":
+
+    from indexer_utils import get_exclusion_list
+
     src_materials = "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books_dummy_v3/books"
-    exclusion_list_file = None
+
+    exclusion_list = get_exclusion_list(
+        es_fieldname="chapter_path_key", es_index_name="page_content", es_client=None
+    )
     pp = preprocess_for_indexing(
-        src_study_materials_books=src_materials, exclusion_list_file=None
+        src_study_materials_books=src_materials, exclusion_list=exclusion_list
     )
     from pprint import pprint
 

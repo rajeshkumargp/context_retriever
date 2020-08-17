@@ -1,0 +1,62 @@
+version: '3.7'
+services:
+  context_retriever_elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    container_name: context_retriever_elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      cluster.name: ttb_es_kib
+      bootstrap.memory_lock: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+       elastic_net:
+         ipv4_address: 172.16.238.10
+
+  context_retriever_kibana:
+    container_name: context_retriever_kibana
+    image: docker.elastic.co/kibana/kibana:7.8.1
+    environment:
+      ELASTICSEARCH_HOSTS: http://context_retriever_elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - context_retriever_elasticsearch
+    volumes:
+      - kibana-volume:/usr/share/kibana
+    networks:
+       elastic_net:
+         ipv4_address: 172.16.238.11
+volumes:
+    elasticsearch-data:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: ${ELASTIC_DATA_DIR}
+    kibana-volume:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: ${KIBANA_DATA_DIR}
+networks:
+  elastic_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
