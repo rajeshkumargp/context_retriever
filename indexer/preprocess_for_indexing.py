@@ -211,10 +211,12 @@ if __name__ == "__main__":
     from indexer_utils import get_exclusion_list
 
     src_materials = "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books_dummy_v3/books"
+    src_materials = "current_run/from_s3_books/books"
 
-    exclusion_list = get_exclusion_list(
-        es_fieldname="chapter_path_key", es_index_name="page_content", es_client=None
-    )
+    #exclusion_list = get_exclusion_list(
+    #    es_fieldname="chapter_path_key", es_index_name="page_content", es_client=None
+    #)
+    exclusion_list = None
     pp = preprocess_for_indexing(
         src_study_materials_books=src_materials, exclusion_list=exclusion_list
     )

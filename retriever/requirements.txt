@@ -1,0 +1,4 @@
+elasticsearch
+flask
+flasgger
+gunicorn

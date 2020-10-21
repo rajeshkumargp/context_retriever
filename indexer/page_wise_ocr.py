@@ -136,44 +136,58 @@ def batch_process_ocr_image(
 
 if __name__ == "__main__":
     import glob
+    import os
     from pprint import pprint
 
-    src_image_path = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png"
-    )
-    ocr_text_path = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png.txt"
-    )
-    result = ocr_single_image(
-        image_file_path=src_image_path,
-        ocr_result_text_file_path=ocr_text_path,
-        tessdata_dir=tessdata_dir,
-    )
+    # src_image_path = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png"
+    # )
+    # ocr_text_path = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak/lhbs102_temp/lhbs102~-01.png.txt"
+    # )
+    # result = ocr_single_image(
+    #     image_file_path=src_image_path,
+    #     ocr_result_text_file_path=ocr_text_path,
+    #     tessdata_dir=tessdata_dir,
+    # )
+    #
+    # pprint(result)
+    #
+    # images_path = glob.glob(
+    #     os.path.join(
+    #         "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/"
+    #         + "fetcher_meta_data/books/class12/Bhogol main peryojnatmak/image_dir",
+    #         "*.png",
+    #     )
+    # )
+    #
+    # temp_dir = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     + "Bhogol main peryojnatmak/images_dir_temp"
+    # )
 
-    pprint(result)
+    images_path = glob.glob(os.path.join('current_run/from_s3_books/books/class12/bharat_main_samajik',
+                                         '*',
+                                         'page_wise_images',
+                                         '*.png')
+                            )
+    temp_dir = [os.path.dirname(a_path).replace('page_wise_images', 'page_wise_text') for a_path in images_path]
 
-    images_path = glob.glob(
-        os.path.join(
-            "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/"
-            + "fetcher_meta_data/books/class12/Bhogol main peryojnatmak/image_dir",
-            "*.png",
-        )
-    )
-
-    temp_dir = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        + "Bhogol main peryojnatmak/images_dir_temp"
-    )
+    print(len(images_path))
+    print(len(temp_dir))
+    print(temp_dir[0])
+    print(images_path[0])
 
     ocr_path = [os.path.basename(a_image)[:-4] + ".txt" for a_image in images_path]
-
-    ocr_path = [os.path.join(temp_dir, text_file_name) for text_file_name in ocr_path]
+    ocr_path_results = list()
+    for text_dir,text_file_name in zip(temp_dir, ocr_path):
+        ocr_path_results.append(os.path.join(text_dir, text_file_name))
 
     batch_results = batch_process_ocr_image(
         list_of_images_path=images_path,
-        list_of_text_files_path=ocr_path,
+        list_of_text_files_path=ocr_path_results,
         process_size=3,
         chunk_size=3,
     )

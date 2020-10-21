@@ -12,7 +12,7 @@ import sys
 import boto3
 from botocore.exceptions import ClientError, ProfileNotFound
 
-from fetcher import fetcher_config
+import s3_config as fetcher_config
 
 # ################
 
@@ -186,6 +186,12 @@ if __name__ == "__main__":
     local_dir = (
         "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books"
     )
+
+    local_dir = (
+        'current_run/curr_books'
+    )
+    # This directory has class12/..../
+
     bucket_name = "ttb-context-retriever-study-materials"
     push_to_s3(
         source_dir=local_dir,

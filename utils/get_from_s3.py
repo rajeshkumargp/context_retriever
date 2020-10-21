@@ -11,7 +11,7 @@ from datetime import datetime
 import boto3
 from botocore.exceptions import ClientError, ProfileNotFound
 
-from fetcher import fetcher_config
+import s3_config as fetcher_config
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -129,9 +129,11 @@ def pull_from_s3(
             # Downloading Meta data log file
 
             category = src_s3_dir_path.split(src_s3_dir_path, 1)[0]
-            meta_download_class_subjects_key = os.path.join(
-                category, fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
-            )
+
+            meta_download_class_subjects_key = fetcher_config.META_DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
+            #os.path.join(
+            #    category, fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
+            #)
 
             dest_file = os.path.join(dest_local_dir, meta_download_class_subjects_key)
             parent_dir = os.path.dirname(dest_file)
@@ -181,9 +183,10 @@ def pull_from_s3(
 if __name__ == "__main__":
     src_s3_bucket = "ttb-context-retriever-study-materials"
     dest_local_dir = "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books_dummy"
+    dest_local_dir = 'current_run/from_s3_books'
     pull_from_s3(
         src_s3_bucket=src_s3_bucket,
-        src_s3_dir_path="books/class12/vyavasai_adhyan-i",
+        src_s3_dir_path="books",
         dest_local_dir=dest_local_dir,
         overwrite=False,
         profile_name="ttb_con_ret",

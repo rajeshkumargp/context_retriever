@@ -49,7 +49,7 @@ def load_s3_key_local_file_to_s3_mapper(current_s3_to_local_map_file):
     # Key= Local pdf, value=(S3_key, s3_url)
 
     local_file_s3_key_s3_url_mapper = {
-        a_line[1]: (a_line[0], frame_s3_given_key(a_line[0])) for a_line in contents
+        os.path.abspath(a_line[1]): (a_line[0], frame_s3_given_key(a_line[0])) for a_line in contents
     }
 
     return local_file_s3_key_s3_url_mapper

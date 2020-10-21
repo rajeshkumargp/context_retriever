@@ -5,7 +5,7 @@ ELASTIC_SEARCH_HOSTS = ["localhost:9200"]
 
 # Setting for page_wise_ocr.py
 TESSDATA_DIR = (
-    "/home/rajeshkumar/Desktop/hindi_OCR/TESSDATA_EXPTS/tessdata_best/tessdata"
+    "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/current_run/tessdata"
 )
 
 # Setting for page_wise_image_converter in preprocess_for_indexing.py

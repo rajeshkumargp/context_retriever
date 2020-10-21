@@ -55,6 +55,8 @@ tbody = driver.find_elements(By.XPATH, ALL_SUBJECTS_XPATH)
 
 if tbody is not None and len(tbody) == 1:
     tbody = tbody[0]
+else:
+    print(len(tbody))
 
 all_books_html = tbody.get_attribute("outerHTML")
 soup = BeautifulSoup(all_books_html, "lxml")

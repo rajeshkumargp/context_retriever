@@ -1,0 +1,66 @@
+<html>
+<title> TurnTheBus Multi-lingual text search (Development version) </title>
+<body>
+<p style="font-size:50px;color:blue;" >TurnTheBus Multi-lingual text search (version 0.01a) </p>
+<form action="/" method="GET">
+
+  <label for="tsearch">Search books: </label>
+  <input type="search" id="querytext" name="querytext" size="100">
+  <input type="submit">
+
+</form>
+
+<div>
+{% if search_results is not none %}
+    <hr>
+    <p style="font-size:20px;color:blue;"> Top Page Suggestions </p> <br/>
+    <hr>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Values</th>
+        </tr>
+    </table>
+
+    {% for a_page_info in search_results['page_suggestion'] %}
+    <table>
+        {% for a_key in ['bookname', 'chapter_path', 'class', 'content', 'es_score', 'ins_timestamp', 'relative_page_number_in_chapter'] %}
+        <tr>
+            <td>{{a_key}}</td>
+            <td>{{a_page_info[a_key]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    {% endfor %}
+
+    <hr>
+    <p style="font-size:20px;color:blue;"> Top Para Suggestions </p> <br/>
+    <hr>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Values</th>
+        </tr>
+    </table>
+    {% for a_para_info in search_results['para_suggestion'] %}
+    <table>
+        {% for a_key in ['bookname', 'chapter_path', 'class', 'para_content', 'es_score', 'ins_timestamp', 'relative_page_number_in_chapter', 'relative_para_number_in_page'] %}
+        <tr>
+            <td>{{a_key}}</td>
+            <td>{{a_para_info[a_key]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    {% endfor %}
+    <hr>
+
+
+
+{% else %}
+
+{%endif %}
+</div>
+</body>
+</html>

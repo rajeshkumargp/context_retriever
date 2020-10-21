@@ -5,6 +5,7 @@ import logging
 
 import indexer_config
 from elasticsearch import Elasticsearch
+import elasticsearch
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -31,8 +32,11 @@ def get_existing_indexed_pdf_from_es(hosts):
         "size": 0,
         "aggs": {"distinct_pdfs": {"terms": "chapter_path", "size": 1000}},
     }
-
-    uniq_pdfs = es.search(index="page_content", body=query_uniq_pdfs)
+    try:
+        uniq_pdfs = es.search(index="page_content", body=query_uniq_pdfs)
+    except elasticsearch.exceptions.RequestError as e:
+        print(str(e))
+        uniq_pdfs = None
 
     es.close()
 

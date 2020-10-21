@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from datetime import datetime
+import glob
 
 from indexer_utils import (
     find_pdf_src_from_txt_src,
@@ -239,18 +240,33 @@ if __name__ == "__main__":
         "run_2020_08_12_16_09_59.json"
     )
 
-    tess_log = None
-    with open(text_info, "r", encoding="utf-8") as fp:
-        tess_log = json.load(fp)
+    # ##########################################
 
-    tess_log_success = tess_log["success"]
+    #  CONFIGURE THIS
 
-    image_src_files = list()
-    ocr_text_files = list()
+    pdf_chapters_info = 'current_run/from_s3_books/meta/books/downloaded_classwise_subjects_chapters_status.json'
 
-    for a_log in tess_log_success:
-        image_src_files.append(a_log["image_src"])
-        ocr_text_files.append(a_log["ocr_text"])
+    text_info = ''
+
+    current_s3_to_local_map_file = "current_run/from_s3_books/current_s3_objects_info_2020_10_13_17_16_33.txt"
+
+    # ##########################################
+    #
+    # tess_log = None
+    # with open(text_info, "r", encoding="utf-8") as fp:
+    #     tess_log = json.load(fp)
+    #
+    # tess_log_success = tess_log["success"]
+    #
+    # image_src_files = list()
+    # ocr_text_files = list()
+    #
+    # for a_log in tess_log_success:
+    #     image_src_files.append(a_log["image_src"])
+    #     ocr_text_files.append(a_log["ocr_text"])
+
+    src = '/home/rajeshkumar/ORGANIZED/OSC/context_retriever/current_run/from_s3_books/books/class12'
+    ocr_text_files = glob.glob(src + "/*/*/page_wise_text/*.txt", recursive=True)
 
     indexing_failures = batch_index_list_of_pages(
         list_of_ocr_text_src_files=ocr_text_files,

@@ -11,9 +11,14 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+import os
 
 BOOK_URL = fetcher_config.BOOK_URL
 executable_path = fetcher_config.FIREFOX_EXECUTABLE_PATH
+CHAP_WISE_URLS_JSON = 'current_run/fetcher_meta_data/class_wise_urls.json'
+
+if not os.path.exists(os.path.dirname(CHAP_WISE_URLS_JSON)):
+    os.makedirs(os.path.dirname(CHAP_WISE_URLS_JSON))
 
 capabilities = DesiredCapabilities().FIREFOX
 capabilities["pageLoadStrategy"] = "eager"
@@ -53,8 +58,8 @@ for a_class, a_class_elem in enumerate(all_classes_elem, 1):
     class_wise_home_pages.append({"class_name": a_class_name, "class_url": a_class_url})
 
 pprint(class_wise_home_pages)
-
-with open("data/fetcher_meta_data/class_wise_urls.josn", "w", encoding="utf-8") as fp:
+print(CHAP_WISE_URLS_JSON)
+with open(CHAP_WISE_URLS_JSON, "w", encoding="utf-8") as fp:
     json.dump(class_wise_home_pages, fp, ensure_ascii=False, indent=2)
 
 print("Done")

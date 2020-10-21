@@ -133,36 +133,51 @@ def batch_process_pdf_to_page_wise_image(
 if __name__ == "__main__":
     # Watch parallel processing using "watch -n 1 "ps u f  -C python,pdftoppm"
 
-    pdf_file_path = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/lhgy301.pdf"
-    )
-    meta_dir_page_image_dir = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak/tttggg"
-    )
-
-    result = convert_pdf_to_page_wise_images(
-        pdf_file_path, meta_dir_page_image_dir, name_separator="~"
-    )
-
-    from pprint import pprint
-
-    pprint(result)
-
-    import glob
-
-    src = (
-        "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
-        "Bhogol main peryojnatmak"
-    )
-    list_of_pdf_file_paths = glob.glob(os.path.join(src, "*.pdf"))
-    list_of_page_wise_dirs = [
-        a_pdf.rsplit(".pdf", 1)[0] + "_temp" for a_pdf in list_of_pdf_file_paths
-    ]
+    # pdf_file_path = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak/lhgy301.pdf"
+    # )
+    # meta_dir_page_image_dir = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak/tttggg"
+    # )
+    #
+    # result = convert_pdf_to_page_wise_images(
+    #     pdf_file_path, meta_dir_page_image_dir, name_separator="~"
+    # )
+    #
+    # from pprint import pprint
+    #
+    # pprint(result)
+    #
+    # import glob
+    #
+    # src = (
+    #     "/home/rajeshkumar/ORGANIZED/OSC/context_retriever/data/fetcher_meta_data/books/class12/"
+    #     "Bhogol main peryojnatmak"
+    # )
+    # list_of_pdf_file_paths = glob.glob(os.path.join(src, "*.pdf"))
+    # list_of_page_wise_dirs = [
+    #     a_pdf.rsplit(".pdf", 1)[0] + "_temp" for a_pdf in list_of_pdf_file_paths
+    # ]
 
     # process_size = 4
     # chunk_size = 2
+
+    import glob
+    from pprint import pprint
+
+    src = 'current_run/from_s3_books/books/class12'
+    src = 'current_run/from_s3_books/books/class12/bharat_main_samajik'
+    list_of_pdf_file_paths = glob.glob(os.path.join(src, "**.pdf"), recursive=True)
+    list_of_page_wise_dirs = [
+        a_pdf.rsplit(".pdf", 1)[0] + "/page_wise_images" for a_pdf in list_of_pdf_file_paths
+        ]
+
+    print(len(list_of_pdf_file_paths))
+    print(len(list_of_page_wise_dirs))
+    print(list_of_page_wise_dirs[0])
+    print(list_of_pdf_file_paths[0])
 
     batch_results = batch_process_pdf_to_page_wise_image(
         list_of_pdf_file_paths=list_of_pdf_file_paths,

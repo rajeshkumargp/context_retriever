@@ -1,0 +1,181 @@
+------------------------------------------------------------------
+PART 1 : FETCHER - fetch from internet
+------------------------------------------------------------------
+
+1. python fetcher/find_chapterwise_urls.py
+    Input:
+        fetcher_config.BOOK_URL
+    Output:
+        current_run/fetcher_meta_data/class_wise_urls.json
+    Desc:
+        Get list of Classes and their root urls
+
+2. python fetcher/chapter_wise_url_retirever.py - Now Getting 404 on Class 12 books
+    Input:
+        fetcher_config.CLASS_A_BOOKS_URL:   http://bstbpc.gov.in/ClassXIIth.aspx
+    Output:
+        fetcher_config.RESULT_JSON: current_run/fetcher_meta_data/class12_books_chapters_info.json
+
+3. python fetcher/refine_extracted_urls.py
+    Input:
+        fetcher_config.REFINE_SRC: current_run/fetcher_meta_data/class12_books_chapters_info.json
+    Output:
+        fetcher_config.REFINE_DEST: current_run/fetcher_meta_data/class12_books_chapters_info_refined.json
+
+4. python fetcher/get_books.py
+    Input:
+        Command Line arguments:
+            --meta_filepath=current_run/fetcher_meta_data/class12_books_chapters_info_refined.json
+            --dest_dir=current_run/curr_books
+    Output:
+        current_run/curr_books
+        fetcher_config.DOWNLOADED_BOOKS_STATUS_LOG_FILE_NAME
+
+------------------------------------------------------------------
+PART 2 : Upload to S3
+------------------------------------------------------------------
+1. confiure aws cli - profiles
+    1.1 Create profile with name 'ttb_con_ret'
+    1.2 aws configure --profile ttb_con_ret
+2. python utils/push_to_s3.py
+    Input:
+        in script: local_dir='current_run/curr_books'
+3. python utils/get_from_s3.p
+    Input:
+    in_script:
+        src_s3_bucket = "ttb-context-retriever-study-materials"
+        dest_local_dir = 'current_run/from_s3_books'
+    Output:
+        dest_local_dir = 'current_run/from_s3_books'
+        CURRENT_S3_KEY_TO_LOCAL_FILE_MAP
+-------------------------------------------------------------
+PART 3: INDEXER
+-------------------------------------------------------------
+Pre-requite:
+    1. sudo apt-get install poppler-utils --quiet
+    2. sudo apt install tesseract-ocr --quiet
+    3. sudo apt install libtesseract-dev --quiet
+    4. tessdata
+        wget https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/master/script/Devanagari.traineddata --quiet
+
+Execution:
+1. python indexer/page_wise_image_converter.py
+    Input:
+    in_script:
+        src=....
+    Output:
+        <pdf_file>/page_wise_images/<page_number>_png
+        ...
+        <pdf_file>/page_wise_images/<page_number>_png
+2. python indexer/page_wise_ocr.py
+    Input:
+    in_script:
+        src=....
+
+        <pdf_file>/page_wise_images/<page_number>_png
+        ...
+        <pdf_file>/page_wise_images/<page_number>_png
+
+
+    Output:
+        <pdf_file>/page_wise_text/<page_number>_png
+        ...
+        <pdf_file>/page_wise_text/<page_number>_png
+
+--------------------------------------------
+Combination of 1 and 2:
+    python indexer/preprocess_for_indexing.py
+--------------------------------------------
+
+3. Make sure Elastic search is running
+    3.1 Check http://localhost:9200/
+    3.2 Check indexes http://localhost:9200/_cat/indices
+    3.3 python indexer/get_indexed_pdf_info_from_es.py
+        -> To get list of PDFs already indexed in ES
+    3.4 python indexer/index_page_wise_text.py
+
+## ############################
+Elastic Search Miscellonous:
+
+1. http://localhost:9200/
+2. http://localhost:9200/_cat/indices
+3. http://localhost:9200/_snapshot
+4. http://localhost:9200/_nodes/?pretty
+
+# #############################
+
+1. Backup Indexed Data to Local Files:
+
+PUT /_snapshot/my_backup/snapshot_001?wait_for_completion=true
+{
+  "indices": "para_content,page_content",
+  "ignore_unavailable": true,
+  "include_global_state": false,
+  "metadata": {
+    "taken_by": "rajeshkumar.p",
+    "taken_because": "backup from local system to copy them to aws s3, selected indices"
+  }
+}
+
+
+PUT /_snapshot/my_backup/snapshot_002?wait_for_completion=true
+{
+  "metadata": {
+    "taken_by": "rajeshkumar.p",
+    "taken_because": "backup from local system to copy them to aws s3, all indices"
+  }
+}
+
+2.
+GET /_snapshot/my_backup/snapshot_001
+GET /_snapshot/my_backup/snapshot_002
+
+GET /_snapshot/_all
+GET /_snapshot/my_backup/_all
+GET /_snapshot/_status
+GET /_snapshot/my_backup/_status
+GET /_snapshot/my_backup/snapshot_001/_status
+
+
+# #############################
+#
+Create EC2 instance
+    https://gist.github.com/hydeenoble/e3edb7e73df13095a8804bc1cbd31e10
+
+# #######################################
+
+# RESTORING
+
+
+1.
+
+curl -X POST "localhost:9200/_snapshot/my_backup/snapshot_001/_restore?pretty" -H 'Content-Type: application/json' -d'
+{
+  "indices": "para_content,page_content",
+  "ignore_unavailable": true,
+  "include_global_state": false,
+  "rename_pattern": "index_(.+)",
+  "rename_replacement": "restored_index_$1",
+  "include_aliases": false
+}
+'
+
+2.
+curl -X GET "localhost:9200/_snapshot/my_backup/snapshot_001/_status?pretty"
+
+3.
+
+
+# ############################
+
+NGINX Setup
+
+1. https://stackoverflow.com/questions/58633027/handling-flask-url-for-behind-nginx-reverse-proxy
+
+# ############################
+
+
+indexer/get_indexed_pdf_info_from_es.py
+indexer/index_page_wise_text.py
+indexer/indexer_utils.py
+
