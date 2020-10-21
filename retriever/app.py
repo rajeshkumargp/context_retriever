@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import logging
 
@@ -9,6 +12,11 @@ from flasgger import Swagger
 import requests
 
 from elasticsearch import Elasticsearch
+
+
+from flasgger import Swagger, LazyString, LazyJSONEncoder
+
+
 
 hosts = [{'host': "localhost", 'port': 9200}]
 elastic_client = Elasticsearch(hosts=hosts)
@@ -32,6 +40,9 @@ def retrieve_context(query_terms, size=5):
     for e in _elastic_response_temp:
         temp = e['_source']
         temp['es_score'] = e['_score']
+        temp['bookname'] = temp['op_subject'] + " - " + temp['op_chapter_name']
+        temp['chapter_path'] = temp['chapter_path_url_s3'] + ", " + temp['op_chapter_path_url_publisher']
+
         elastic_response_para.append(temp)
     del _elastic_response_temp
 
@@ -51,6 +62,8 @@ def retrieve_context(query_terms, size=5):
     for e in _elastic_response_temp:
         temp = e['_source']
         temp['es_score'] = e['_score']
+        temp['bookname'] = temp['op_subject'] + " - " + temp['op_chapter_name']
+        temp['chapter_path'] = temp['chapter_path_url_s3'] + ", " + temp['op_chapter_path_url_publisher']
         elastic_response_page.append(temp)
     del _elastic_response_temp
 
@@ -67,9 +80,40 @@ app = Flask(__name__)
 app.logger.info("Starting...")
 app.config['SECRET_KEY'] = secret
 app.logger.critical("secret: %s" % secret)
+
 # socketio = SocketIO(app)
 app = Flask(__name__)
-swagger = Swagger(app)
+app.json_encoder = LazyJSONEncoder
+
+template = dict(swaggerUiPrefix=LazyString(lambda : request.environ.get('HTTP_X_SCRIPT_NAME', '')))
+
+
+
+swagger_config = {
+    "headers": [
+    ],
+    "specs": [
+        {
+            "endpoint": 'apispec_1',
+            "route": '/apispec_1.json',
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    # "static_folder": "static",  # must be set by user
+    "swagger_ui": True,
+    "specs_route": "/apidocs/"
+}
+
+
+
+
+
+swagger = Swagger(app, template=template) 
+# swagger = Swagger(app, config=swagger_config)
+
+#swagger = Swagger(app) 
 
 
 @app.route("/check")
@@ -118,8 +162,8 @@ def get_results():
             search_results_dict = None
         else:
             search_results_dict = retrieve_context(query_terms=querytext, size=5)
-            # from pprint import pprint
-            # pprint(search_results_dict)
+            #from pprint import pprint
+            #pprint(search_results_dict)
 
             return render_template('home.html', search_results=search_results_dict)
         return render_template('home.html', search_results=search_results_dict)

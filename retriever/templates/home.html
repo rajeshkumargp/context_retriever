@@ -24,7 +24,7 @@
 
     {% for a_page_info in search_results['page_suggestion'] %}
     <table>
-        {% for a_key in ['bookname', 'chapter_path', 'class', 'content', 'es_score', 'ins_timestamp', 'relative_page_number_in_chapter'] %}
+        {% for a_key in ['bookname', 'chapter_path', 'class', 'page_content', 'es_score', 'ins_timestamp', 'relative_page_number_in_chapter'] %}
         <tr>
             <td>{{a_key}}</td>
             <td>{{a_page_info[a_key]}}</td>
